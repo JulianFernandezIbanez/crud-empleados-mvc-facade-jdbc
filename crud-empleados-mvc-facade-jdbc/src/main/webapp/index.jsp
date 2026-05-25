@@ -40,5 +40,9 @@
 		5- Capa model
 		6- etc -->
 	    <h1>Bienvenido a la aplicacion de gestion de Empleados</h1>
+	    
+	    <div>
+	    	<a href="MainControler">Mostrar Listado de empleados</a>
+	    </div>
 	</body>
 </html>

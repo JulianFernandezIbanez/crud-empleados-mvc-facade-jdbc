@@ -42,7 +42,7 @@ public class MainControler extends HttpServlet {
 		
 		try {
 			connectionResult = empleadoService.isConnectionOK();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

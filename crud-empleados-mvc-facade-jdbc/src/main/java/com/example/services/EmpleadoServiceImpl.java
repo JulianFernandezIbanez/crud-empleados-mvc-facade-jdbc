@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.example.dao.DBConexion;
 import com.example.models.Empleado;
@@ -12,6 +13,7 @@ import com.example.models.Genero;
 
 public class EmpleadoServiceImpl implements EmpleadoService {
 
+	private static final Logger LOG = Logger.getLogger("EmpleadoServiceInpl");
 	@Override
 	public boolean isConnectionOK() throws Exception {
 		// Conectar con DAO
@@ -58,7 +60,8 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 			}
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			LOG.severe("Error al recuperar los empleados" + e.getMessage());
+			e.printStackTrace();
 		}
 		
 		return empleados;

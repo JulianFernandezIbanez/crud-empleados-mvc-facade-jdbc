@@ -6,9 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
+import com.example.models.Empleado;
+import com.example.services.EmpleadoService;
 import com.example.services.EmpleadoServiceImpl;
 
 /**
@@ -31,27 +33,15 @@ public class MainControler extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Hay que conectar con la capa de servicios, 
-		// que a su vez conectara con la capa DAO (implementacion de JDBC)
-		// para hacer las consultas SQL correspondientes
-		// y finalmente el Servlet mostrara la respuesta renderizando una vista JSP
+		// Conectar con la capa de servicios
+		EmpleadoService empleadoService = new EmpleadoServiceImpl();
+		List<Empleado> empleados = empleadoService.getEmpleados();
 		
-		//Comprobar conexion con la BBDD a traves de la capa servicios
-		EmpleadoServiceImpl empleadoService = new EmpleadoServiceImpl();
-		boolean connectionResult = false;
+		//Renderizar vista de empleados
+		request.setAttribute("empleados", empleados);
 		
-		try {
-			connectionResult = empleadoService.isConnectionOK();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		request.getRequestDispatcher("views/listadoEmpleados.jsp").forward(request, response);
 		
-		if (connectionResult) {
-			LOG.info("Conexion Exitosa");
-		}else {
-			LOG.info("Error de conexion");
-		}
 	}
 
 	/**

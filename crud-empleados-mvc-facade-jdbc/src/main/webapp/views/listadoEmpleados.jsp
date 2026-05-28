@@ -13,6 +13,9 @@
 			List<Empleado> empleados = (List<Empleado>) request.getAttribute("empleados");
 		%>
 		<h1>Listado de empleados</h1>
+		<div>
+			<a title="Muestra el formulario de alta/modificacion de empleado" href="AltaController">Alta de Empleado</a>
+		</div>
 		<table>
 			<thead>
 				<tr>

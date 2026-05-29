@@ -5,8 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import com.example.models.Empleado;
 
 public class DBConexion implements AutoCloseable {
     
@@ -83,5 +86,16 @@ public class DBConexion implements AutoCloseable {
 		}
 		
 		return(rs);
+	}
+	
+	//inserccion de Empleados en el marco de una transaccion
+	public void altaEmpleado(Empleado empleado,List<String> dirCorreos, List<String>numTlf) {
+		
+		//Inserccion del empleado y devolver el last inserted id de la tabla de empleados
+		String query1 = "";
+		
+		//Insertar correos y telefonos del id del empleado recogido
+		String query2;
+		String query3;
 	}
 }

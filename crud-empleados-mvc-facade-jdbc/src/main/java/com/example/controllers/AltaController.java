@@ -6,6 +6,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.example.models.Departamento;
+import com.example.services.DepartamentoService;
+import com.example.services.DepartamentoServiceImpl;
 
 /**
  * Servlet implementation class AltaController
@@ -13,6 +19,7 @@ import java.io.IOException;
 @WebServlet("/AltaController")
 public class AltaController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = Logger.getLogger("AltaController");
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -27,6 +34,10 @@ public class AltaController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		DepartamentoService departamentoService = new DepartamentoServiceImpl();
+		List<Departamento> departamentos = departamentoService.getDepartamentos();
+		
+		request.setAttribute("departamentos", departamentos);
 		request.getRequestDispatcher("views/formularioAltaModificacion.jsp").forward(request, response);
 	}
 

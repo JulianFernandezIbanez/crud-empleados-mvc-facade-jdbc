@@ -60,7 +60,25 @@ public class DBConexion implements AutoCloseable {
 			stmt = connection.createStatement();
 			rs = stmt.executeQuery(query);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			LOG.severe("Error al recuperar los empleados. Causa "+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return(rs);
+	}
+	
+	//Recuperacion de los registros de la tabla departamento
+	public ResultSet getDepartamentos(Connection connection) {
+		
+		ResultSet rs = null;
+		String query = "SELECT * FROM `empresa-crud-empleados`.departamentos";
+		Statement stmt = null;
+		
+		try {
+			stmt = connection.createStatement();
+			rs = stmt.executeQuery(query);
+		} catch (SQLException e) {
+			LOG.severe("Error al recuperar los departamentos. Causa "+e.getMessage());
 			e.printStackTrace();
 		}
 		

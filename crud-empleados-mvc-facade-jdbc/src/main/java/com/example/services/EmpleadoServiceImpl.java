@@ -3,6 +3,7 @@ package com.example.services;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -60,11 +61,28 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 			}
 			
 		} catch (Exception e) {
-			LOG.severe("Error al recuperar los empleados" + e.getMessage());
+			LOG.severe("Error al recuperar los empleados " + e.getMessage());
 			e.printStackTrace();
 		}
 		
 		return empleados;
 	}
+
+	@Override
+	public void altaEmpleado(Empleado empleado, List<String> emails, List<String> telefonos) throws SQLException {
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConnection()) {
+			
+			dbConexion.altaEmpleado(empleado, emails, telefonos, connection);
+			
+		} catch (Exception e) {
+			LOG.severe("Error en la insercion "+e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
+
+
 
 }

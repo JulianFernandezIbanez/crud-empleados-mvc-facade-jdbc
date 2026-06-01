@@ -9,4 +9,5 @@ public interface EmpleadoService {
 	//Comprobacion de conexion a la BBDD
 	public abstract boolean isConnectionOK() throws SQLException, Exception;
 	public abstract List<Empleado> getEmpleados();
+	public abstract void altaEmpleado(Empleado empleado, List<String> emails, List<String> telefonos) throws SQLException;
 }

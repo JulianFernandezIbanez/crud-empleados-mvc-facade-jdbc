@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,8 @@ import com.example.models.Empleado;
 import com.example.models.Genero;
 import com.example.services.DepartamentoService;
 import com.example.services.DepartamentoServiceImpl;
+import com.example.services.EmpleadoService;
+import com.example.services.EmpleadoServiceImpl;
 
 /**
  * Servlet implementation class AltaController
@@ -94,6 +97,19 @@ public class AltaController extends HttpServlet {
 		/*LOG.info("Nombre recibido: "+nombre);
 		LOG.info("Genero recibido: "+genero);
 		*/
+		
+		EmpleadoService empleadoService = new EmpleadoServiceImpl();
+		try {
+			empleadoService.altaEmpleado(empleado, direccionesCorreo, numerosTelefono);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List<Empleado> empleados = empleadoService.getEmpleados();
+		
+		request.setAttribute("empleados", empleados);
+		request.getRequestDispatcher("views/listadoEmpleados.jsp").forward(request, response);
 	}
 
 }

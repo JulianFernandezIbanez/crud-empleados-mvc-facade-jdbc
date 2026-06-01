@@ -37,7 +37,7 @@
 						<td> <%= empleado.SegundoApellido() %></td>
 						<td> <%= empleado.FechaAlta() %></td>
 						<td> <%= empleado.Genero() %></td>
-						<td> <%= empleado.Salario() %></td>
+						<td> <%= String.format("%.2f", empleado.Salario()) %></td>
 					</tr>	
 				<%		
 					}

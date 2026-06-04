@@ -1,3 +1,4 @@
+<%@page import="java.math.RoundingMode"%>
 <%@page import="com.example.models.Empleado"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -7,6 +8,15 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Empleados</title>
+		<style>
+			table, th, td {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+			th, td {
+				padding: 10px;
+			}
+	</style>
 	</head>
 	<body>
 		<%
@@ -37,7 +47,8 @@
 						<td> <%= empleado.SegundoApellido() %></td>
 						<td> <%= empleado.FechaAlta() %></td>
 						<td> <%= empleado.Genero() %></td>
-						<td> <%= String.format("%.2f", empleado.Salario()) %></td>
+						<td> <%= empleado.Salario().setScale(2, RoundingMode.HALF_UP) %></td>
+						<td><a href="DetallesController?idEmpleado=<%= empleado.id() %>">Detalles</a></td> 
 					</tr>	
 				<%		
 					}

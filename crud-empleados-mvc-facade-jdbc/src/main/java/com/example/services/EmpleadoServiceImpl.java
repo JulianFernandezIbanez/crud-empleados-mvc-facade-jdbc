@@ -5,16 +5,19 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.example.dao.DBConexion;
+import com.example.models.Detalle;
 import com.example.models.Empleado;
 import com.example.models.Genero;
 
 public class EmpleadoServiceImpl implements EmpleadoService {
 
-	private static final Logger LOG = Logger.getLogger("EmpleadoServiceInpl");
+	private static final Logger LOG = Logger.getLogger("EmpleadoServiceImpl");
 	@Override
 	public boolean isConnectionOK() throws Exception {
 		// Conectar con DAO
@@ -81,6 +84,45 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public Detalle getDetalles(int idEmpleado) {
+
+		Detalle detalles = null;
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConnection()) {
+			
+			ResultSet rs =  dbConexion.getDetalles(idEmpleado, connection);
+			
+			//Recuperacion de los nombres del Dpto
+			String nombreDpto = null;
+			
+			if (rs.next()) {
+				nombreDpto = rs.getString("nombre");
+			}
+			
+			//Recuperacion de la lista de correos y telefonos
+			//Utilizacion Set para que no adimita duplicados
+			Set<String> listaCorreos = new HashSet<String>();
+			Set<String> numerosTlf = new HashSet<String>();
+			
+			while(rs.next()) {
+				listaCorreos.add(rs.getString("email"));
+				numerosTlf.add(rs.getString("numero"));
+			}
+				
+			detalles = new Detalle(nombreDpto, listaCorreos, numerosTlf);
+			
+			LOG.info("Detalles "+ detalles);
+			
+		} catch (Exception e) {
+			LOG.severe("Error a la hora de recuperar los detalles "+e.getMessage());
+			e.printStackTrace();	
+		}
+		
+		return detalles;
 	}
 
 

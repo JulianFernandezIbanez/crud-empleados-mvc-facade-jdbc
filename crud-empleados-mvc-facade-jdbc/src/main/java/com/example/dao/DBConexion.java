@@ -182,4 +182,29 @@ public class DBConexion implements AutoCloseable {
 		}
 
 	}
+	
+	//Metodo que recupera todos los detalles del empleado enviado (Dpto, telefonos y correos)
+	public ResultSet getDetalles(int idEmpleado, Connection connection) {
+		
+		ResultSet rs = null;
+		String query = "SELECT departamentos.nombre, correos.email, telefonos.numero "
+				+ "FROM empleados "
+				+ "LEFT JOIN departamentos ON empleados.departamentos_id = departamentos.id "
+				+ "LEFT JOIN correos ON empleados.id = correos.empleados_id "
+				+ "LEFT JOIN telefonos ON empleados.id = telefonos.empleados_id "
+				+ "WHERE empleados.id = ?; ";
+		
+		PreparedStatement stmt1 = null;
+		
+		try {
+			stmt1 = connection.prepareStatement(query);
+			stmt1.setInt(1, idEmpleado);
+			rs = stmt1.executeQuery();
+		} catch (SQLException e) {
+			LOG.severe("Error al conseguir los detalles del empleado "+ e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
 }

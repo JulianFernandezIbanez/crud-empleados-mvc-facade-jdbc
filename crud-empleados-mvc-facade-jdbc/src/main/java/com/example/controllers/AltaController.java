@@ -110,6 +110,7 @@ public class AltaController extends HttpServlet {
 		
 		request.setAttribute("empleados", empleados);
 		request.getRequestDispatcher("views/listadoEmpleados.jsp").forward(request, response);
+		//response.sendRedirect("views/listadoEmpleados.jsp");
 	}
 
 }

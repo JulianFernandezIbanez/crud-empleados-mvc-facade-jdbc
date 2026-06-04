@@ -6,9 +6,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
+import javax.management.RuntimeErrorException;
+
 import com.example.models.Detalle;
+import com.example.models.Empleado;
 import com.example.services.EmpleadoService;
 import com.example.services.EmpleadoServiceImpl;
 
@@ -40,6 +44,16 @@ public class DetallesController extends HttpServlet {
 		
 		EmpleadoService empleadoService = new EmpleadoServiceImpl();
 		Detalle detalle = empleadoService.getDetalles(idEmpleado);
+		List<Empleado> empleados = empleadoService.getEmpleados();
+		Empleado empleado = empleados.stream()
+				.filter(e -> e.id() == idEmpleado)
+				.findFirst()
+				.orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+		
+		//Mostrae la vista detallesEmpleado.jsp
+		request.setAttribute("detalles", detalle);
+		request.setAttribute("empleado", empleado);
+		request.getRequestDispatcher("views/detallesEmpleado.jsp").forward(request, response);
 	}
 
 	/**

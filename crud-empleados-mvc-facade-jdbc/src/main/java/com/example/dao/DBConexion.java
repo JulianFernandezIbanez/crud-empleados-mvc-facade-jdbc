@@ -197,7 +197,9 @@ public class DBConexion implements AutoCloseable {
 		PreparedStatement stmt1 = null;
 		
 		try {
-			stmt1 = connection.prepareStatement(query);
+			stmt1 = connection.prepareStatement(query,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
 			stmt1.setInt(1, idEmpleado);
 			rs = stmt1.executeQuery();
 		} catch (SQLException e) {

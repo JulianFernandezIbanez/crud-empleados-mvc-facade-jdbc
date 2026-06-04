@@ -108,8 +108,13 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 			Set<String> listaCorreos = new HashSet<String>();
 			Set<String> numerosTlf = new HashSet<String>();
 			
+			rs.beforeFirst();
 			while(rs.next()) {
 				listaCorreos.add(rs.getString("email"));
+			}
+			
+			rs.beforeFirst();
+			while(rs.next()) {
 				numerosTlf.add(rs.getString("numero"));
 			}
 				

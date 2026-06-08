@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.logging.Logger;
 import com.example.dao.DBConexion;
 import com.example.models.Detalle;
 import com.example.models.Empleado;
+import com.example.models.EmpleadoUpdate;
 import com.example.models.Genero;
 
 public class EmpleadoServiceImpl implements EmpleadoService {
@@ -128,6 +130,76 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 		}
 		
 		return detalles;
+	}
+
+	@Override
+	public EmpleadoUpdate getEmpleadoById(int idEmpleado) {
+		
+		EmpleadoUpdate empleadoUpdate = null;
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConnection()){
+			
+			ResultSet rs = dbConexion.getInfo(idEmpleado, connection);
+			int idEmp = 0;
+			String nombreEmp = null;
+			String primerApellido = null;
+			String segundoApellido = null;
+			LocalDate fechaAlta = null;
+			Genero genero = null;
+			BigDecimal salario = new BigDecimal(0);
+			int idDpto = 0;
+			String nombreDpto = null;
+			Set<String> numTfl = new HashSet<String>();
+			Set<String> emails = new HashSet<String>();
+			
+			if(rs.next()) {
+				idEmp = rs.getInt("idEmpleado");
+				nombreEmp = rs.getString("nombreEmpleado");
+				primerApellido = rs.getString("primerApellido");
+				segundoApellido = rs.getString("segundoApellido");
+				fechaAlta = rs.getDate("fechaAlta").toLocalDate();
+				genero = Genero.valueOf(rs.getString("genero"));
+				salario = new BigDecimal(rs.getDouble("salario"));
+				idDpto = rs.getInt("idDpto");
+				nombreDpto = rs.getString("nombreDpto");
+			}
+			
+			rs.beforeFirst();
+			while(rs.next()) {
+				emails.add(rs.getString("email"));
+			}
+			
+			rs.beforeFirst();
+			while(rs.next()) {
+				numTfl.add(rs.getString("numero"));
+			}
+			
+			empleadoUpdate = new EmpleadoUpdate(idEmp, nombreEmp, primerApellido, segundoApellido, fechaAlta, genero, salario, idDpto, nombreDpto, numTfl , emails);
+			
+			LOG.info("Informacion "+ empleadoUpdate);
+			
+		} catch (Exception e) {
+			LOG.severe("Error a la hora de recuperar los datos "+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return empleadoUpdate;
+	}
+
+	@Override
+	public void updateEmpleado(Empleado empleado, List<String> emails, List<String> numTlf) {
+
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConnection()) {
+			
+			dbConexion.updateEmpleado(empleado, emails, numTlf, connection);
+			
+		} catch (Exception e) {
+			LOG.severe("Error en la actualizacion "+e.getMessage());
+			e.printStackTrace();
+		}
+		
 	}
 
 

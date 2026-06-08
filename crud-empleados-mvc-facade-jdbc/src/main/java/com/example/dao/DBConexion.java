@@ -12,6 +12,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import com.example.models.Empleado;
+import com.example.models.EmpleadoUpdate;
 
 public class DBConexion implements AutoCloseable {
     
@@ -208,5 +209,105 @@ public class DBConexion implements AutoCloseable {
 		}
 		
 		return rs;
+	}
+	
+	public ResultSet getInfo(int idEmpleado, Connection connection) {
+		
+		ResultSet rs = null;
+		String query = "SELECT emp.id idEmpleado, "
+				+ "emp.nombre nombreEmpleado, "
+				+ "emp.primerApellido, "
+				+ "emp.segundoApellido, "
+				+ "emp.fechaAlta, "
+				+ "emp.genero, "
+				+ "emp.salario, "
+				+ "emp.departamentos_id, "
+				+ "dep.id idDpto, "
+				+ "dep.nombre nombreDpto, "
+				+ "tel.numero, "
+				+ "co.email "
+				+ "FROM empleados emp "
+				+ "LEFT JOIN departamentos dep ON emp.departamentos_id = dep.id "
+				+ "LEFT JOIN correos co ON emp.id = co.empleados_id "
+				+ "LEFT JOIN telefonos tel ON emp.id = tel.empleados_id "
+				+ "WHERE emp.id = ?;";
+		PreparedStatement stmt = null;
+		
+		try {
+			stmt = connection.prepareStatement(query,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			stmt.setInt(1, idEmpleado);
+			rs = stmt.executeQuery();
+		} catch (Exception e) {
+			LOG.severe("Error al conseguir la informacion "+ e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
+	public void updateEmpleado(Empleado empleado, 
+			List<String> emails, List<String> numTlf, Connection connection) {
+		
+		String query1 = "UPDATE `empleados` SET `nombre` = ?, `primerApellido` = ?, "
+				+ "`segundoApellido` = ?, `fechaAlta` = ?, "
+				+ "`genero` = ?, `salario` = ?, "
+				+ "`departamentos_id` = ? WHERE (`id` = ?)";
+		
+		String deleteEmails = "DELETE FROM correos WHERE empleados_id = ?";
+		String insertEmails = "INSERT INTO `correos` (`email`, `empleados_id`) "
+				+ "VALUES (?, ?)";
+		
+		String deleteTlf = "DELETE FROM telefonos WHERE empleados_id = ?";
+		String insertTlf = "INSERT INTO `telefonos` (`numero`, `empleados_id`) "
+				+ "VALUES (?, ?)";
+		
+		try {
+			PreparedStatement stmt1 = connection.prepareStatement(query1);
+			
+			stmt1.setString(1, empleado.nombre());
+			stmt1.setString(2, empleado.PrimerApellido());
+			stmt1.setString(3, empleado.SegundoApellido());
+			stmt1.setDate(4, Date.valueOf(empleado.FechaAlta()));
+			stmt1.setString(5, empleado.Genero().name());
+			stmt1.setDouble(6, empleado.Salario().doubleValue());
+			stmt1.setInt(7, empleado.Departamentos_id());
+			stmt1.setInt(8, empleado.id());
+			stmt1.executeUpdate();
+			
+			//Eliminacion de los correos y telefonos antiguos e insercion de los nuevos
+			PreparedStatement stmtDeleteCorreos = connection.prepareStatement(deleteEmails);
+			stmtDeleteCorreos.setInt(1, empleado.id());
+			stmtDeleteCorreos.executeUpdate();
+			
+			PreparedStatement stmtInsertCorreos = connection.prepareStatement(insertEmails);
+			stmtInsertCorreos.setInt(2, empleado.id());
+			for (String email : emails) {
+				stmtInsertCorreos.setString(1, email);
+				stmtInsertCorreos.addBatch();
+			}
+
+			stmtInsertCorreos.executeBatch();
+			
+			PreparedStatement stmtDeleteTlf = connection.prepareStatement(deleteTlf);
+			stmtDeleteCorreos.setInt(1, empleado.id());
+			stmtDeleteTlf.executeUpdate();
+			
+			PreparedStatement stmtInsertTlf = connection.prepareStatement(insertTlf);
+			stmtInsertTlf.setInt(2, empleado.id());
+			for (String tlf : numTlf) {
+				stmtInsertTlf.setString(1, tlf);
+				stmtInsertTlf.addBatch();
+			}
+
+			stmtInsertTlf.executeBatch();
+			
+		} catch (SQLException e) {
+			LOG.severe("Error en la insercion. Causa: "+e.getMessage());
+			e.printStackTrace();
+		}
+		
+
 	}
 }

@@ -48,7 +48,8 @@
 						<td> <%= empleado.FechaAlta() %></td>
 						<td> <%= empleado.Genero() %></td>
 						<td> <%= empleado.Salario().setScale(2, RoundingMode.HALF_UP) %></td>
-						<td><a href="DetallesController?idEmpleado=<%= empleado.id() %>">Detalles</a></td> 
+						<td><a href="DetallesController?idEmpleado=<%= empleado.id() %>">Detalles</a></td>
+						<td><a href="UpdateController?idEmpleado=<%= empleado.id() %>">Modificar</a></td>
 					</tr>	
 				<%		
 					}
